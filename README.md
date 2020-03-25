@@ -116,6 +116,6 @@ The above link is the official website for PM2 which is a powerful process manag
     4- < sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com >
 ## This is only valid for 90 days, test the renwal process with <certbot renew --dre-run> ##
 
-###Now you are all set, up and running ^^###
+# Now you are all set, up and running ^^#
  
     
