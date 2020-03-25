@@ -6,9 +6,12 @@ This is just a small reference on how to deploy nodejs application to a producti
 
 1- There are many ways to deploy node applications to servers, and it depends on the application requirements, the type of the server, developers prefrences and knowledge, application and business constraints and needs...etc.
 other ways might include the involvement of using technologies such as docker, jinkins, kubernetes..etc.  
+
 2- In this document I took Digital Ocean as an example of a server to deploy to using simple server login with ssh keys.
-3- Commands that you need to use are all wrapped up between <> for example <npm install>; just use what's inside the angle brackets.
-4- Whenever you are not on the root directory (@root) you need to use <sudo> before your commands to run them.
+
+3- Commands that you need to use are all wrapped up between <> for example < npm install >; just use what's inside the angle brackets.
+
+4- Whenever you are not on the root directory (@root) you need to use < sudo > before your commands to run them.
 
 # STEPS:
 
