@@ -2,12 +2,13 @@
 
 This is just a small reference on how to deploy nodejs application to a production server
 
-# NOTES:
+# GENERAL NOTES:
 
 1- There are many ways to deploy node applications to servers, and it depends on the application requirements, the type of the server, developers prefrences and knowledge, application and business constraints and needs...etc.
 other ways might include the involvement of using technologies such as docker, jinkins, kubernetes..etc.  
 2- In this document I took Digital Ocean as an example of a server to deploy to using simple server login with ssh keys.
 3- Commands that you need to use are all wrapped up between <> for example <npm install>; just use what's inside the angle brackets.
+4- Whenever you are not on the root directory (@root) you need to use <sudo> before your commands to run them.
 
 # STEPS:
 
@@ -67,3 +68,54 @@ The above link is the official website for PM2 which is a powerful process manag
     3- <pm2 logs> //Will log your console activities 
 
 ## PM2 has many other usful commands, which you can check on the official documentation on the link above such as pm2 status and pm2 restart server##
+
+###Now you have your application up and running; however you need to a web server (preferably nginx) to setup a reverse proxy so when you hit port 80 it forwards it to port 5000 or 3000 (or the port that you set within your application, you will also need to set a firewall so that no other port rather than 8080 could be accessed)###
+
+# 7 Install NGINX and setup your firewall: 
+
+    1- <apt install nginx> //install nginx 
+
+*-- Configure firewall --* 
+
+    2- <ufw enable> //Enable firewale
+    3- <ufw allow ssh> // Allowing port (note: you can put the port number)
+    4- <ufw status> // Check ports status (whether its allowed or not)
+
+*-- With this up to here your port won't work, if you refresh your IP with the port domain which is exactly what you want to do --*
+*-- Now you can allow port 80 by using the following command --*
+
+    5- <ufw allow http> //allow port 80
+    6- <ufw allow https> // allow port 443
+    
+*-- Configure nginx --* 
+
+    7- <sudo nano /ect/nginx/sites-available/default> // which will open a file that you need to edit the server block (server { }) with the following block:
+
+    server { server_name <yourdomain>.com www.<yourdomain>.com 
+
+    location / {
+        proxy_pass http://localhost:5000; //(Again whatever your port was within your application)
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cashe_bypass $http_upgrade;
+    } }
+
+    8- use crtl + x to exit and save 
+    9- service nginx restart // Restart nginx
+    10- nginx -t // Check and see if everything works the way it should
+
+    ### Now you can buy a domain name from any domain provider, and you can then assign it to your application droplet using Digital Ocean tools(Nteworking Tab) ###
+
+# 8 Add SSL with LetsEncrypt using the following commands:
+
+    1- < sude add-apt-repository ppa:certbot/certbot >
+    2- < sudo apt-get update>
+    3- < sudo apt-get install python-certbot-nginx >
+    4- < sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com >
+## This is only valid for 90 days, test the renwal process with <certbot renew --dre-run> ##
+
+###Now you are all set, up and running ^^###
+ 
+    
