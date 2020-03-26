@@ -4,8 +4,8 @@ This is just a small reference on how to deploy nodejs application to a producti
 
 # GENERAL NOTES:
 
-1- There are many ways to deploy node applications to servers, and it depends on the application requirements, the type of the server, developers prefrences and knowledge, application and business constraints and needs...etc.
-other ways might include the involvement of using technologies such as docker, jinkins, kubernetes..etc.  
+1- There are many ways to deploy node applications to servers, and it depends on the application requirements, the type of the server, developers preferences and knowledge, application and business constraints and needs...etc.
+other ways might include the involvement of using technologies such as docker, jinkins, kubernetes..etc.
 
 2- In this document I took Digital Ocean as an example of a server to deploy to using simple server login with ssh keys.
 
@@ -51,13 +51,13 @@ other ways might include the involvement of using technologies such as docker, j
 
     *-- Optionally you can stop your application using ctrl+c --*
 
-## If you have a config file that you want to rename you can use the command <mv "the path of the original file with its extention" "the path of the new file with the new name including the extention as well> ##
+## If you have a config file that you want to rename you can use the command <mv "the path of the original file with its extention" "the path of the new file with the new name including the extention as well>
 
-## If you want to insert values to your config file you can use the command <nano "the name of the file with the extention included> which will open a text editor inside your cmd where you can asign your values. Then hit crtl+x then y to save ##
+## If you want to insert values to your config file you can use the command <nano "the name of the file with the extention included> which will open a text editor inside your cmd where you can asign your values. Then hit crtl+x then y to save
 
-## If you get a problem with your mongo db connection chech that if it uses your local IP only, if it does change that in the settings at your mongodb host provider by adding the IP address of your droplet ##
+## If you get a problem with your mongo db connection chech that if it uses your local IP only, if it does change that in the settings at your mongodb host provider by adding the IP address of your droplet
 
-## Digital Ocean (like many other servers providers) provide you with handy tools on your online portal one of them is Snapshots which make a live copy of your application at a specific moment in time, let's say before you donload a packge or set jobs on the database##
+## Digital Ocean (like many other servers providers) provide you with handy tools on your online portal one of them is Snapshots which make a live copy of your application at a specific moment in time, let's say before you donload a packge or set jobs on the database
 
 # 6 Setup PM2 (Process Manager) to keep your app runing:
 
@@ -65,36 +65,36 @@ other ways might include the involvement of using technologies such as docker, j
 
 The above link is the official website for PM2 which is a powerful process manager from npm. Below are the commands to run your application using pm2:
 
-    1- <npm i -g pm2> //install pm2 
+    1- <npm i -g pm2> //install pm2
     2- <pm2 start "your application entery file which is usually index.js or server.js">
-    3- <pm2 startup ubuntu> //Will restart the application with every server reboot 
-    3- <pm2 logs> //Will log your console activities 
+    3- <pm2 startup ubuntu> //Will restart the application with every server reboot
+    3- <pm2 logs> //Will log your console activities
 
-## PM2 has many other usful commands, which you can check on the official documentation on the link above such as pm2 status and pm2 restart server##
+## PM2 has many other usful commands, which you can check on the official documentation on the link above such as pm2 status and pm2 restart server
 
 ###Now you have your application up and running; however you need to a web server (preferably nginx) to setup a reverse proxy so when you hit port 80 it forwards it to port 5000 or 3000 (or the port that you set within your application, you will also need to set a firewall so that no other port rather than 8080 could be accessed)###
 
-# 7 Install NGINX and setup your firewall: 
+# 7 Install NGINX and setup your firewall:
 
-    1- <apt install nginx> //install nginx 
+    1- <apt install nginx> //install nginx
 
-*-- Configure firewall --* 
+_-- Configure firewall --_
 
     2- <ufw enable> //Enable firewale
     3- <ufw allow ssh> // Allowing port (note: you can put the port number)
     4- <ufw status> // Check ports status (whether its allowed or not)
 
-*-- With this up to here your port won't work, if you refresh your IP with the port domain which is exactly what you want to do --*
-*-- Now you can allow port 80 by using the following command --*
+_-- With this up to here your port won't work, if you refresh your IP with the port domain which is exactly what you want to do --_
+_-- Now you can allow port 80 by using the following command --_
 
     5- <ufw allow http> //allow port 80
     6- <ufw allow https> // allow port 443
-    
-*-- Configure nginx --* 
+
+_-- Configure nginx --_
 
     7- <sudo nano /ect/nginx/sites-available/default> // which will open a file that you need to edit the server block (server { }) with the following block:
 
-    server { server_name <yourdomain>.com www.<yourdomain>.com 
+    server { server_name <yourdomain>.com www.<yourdomain>.com
 
     location / {
         proxy_pass http://localhost:5000; //(Again whatever your port was within your application)
@@ -105,7 +105,7 @@ The above link is the official website for PM2 which is a powerful process manag
         proxy_cashe_bypass $http_upgrade;
     } }
 
-    8- use crtl + x to exit and save 
+    8- use crtl + x to exit and save
     9- service nginx restart // Restart nginx
     10- nginx -t // Check and see if everything works the way it should
 
@@ -117,8 +117,7 @@ The above link is the official website for PM2 which is a powerful process manag
     2- < sudo apt-get update>
     3- < sudo apt-get install python-certbot-nginx >
     4- < sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com >
-## This is only valid for 90 days, test the renwal process with <certbot renew --dre-run> ##
 
-# Now you are all set, up and running ^^#
- 
-    
+## This is only valid for 90 days, test the renwal process with <certbot renew --dre-run>
+
+# Now you are all set, up and running ^^
